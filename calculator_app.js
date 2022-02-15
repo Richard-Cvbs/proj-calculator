@@ -1,7 +1,5 @@
-/*     const numberButtons = document.querySelectorAll('.number'),
-    const optButtons = document.querySelectorAll('.operator'),
-    const eraseButtons = document.querySelectorAll('.erase'),
-    const decimalPointButton = document.querySelectorAll('.decimal') */
+const mainScreen = document.querySelector('.result');
+const previous = document.querySelector('.previous')
 const isOperator = (element) => {
     if (element === '+'|| element === '-'|| element === '*'|| element === '/'){
         return true
@@ -24,7 +22,7 @@ function divide (a,b){
 let currentValue = [];
 function operate(input){
     if (input === '='){
-        return console.log(resolve(currentValue))
+        return currentValue = resolve(currentValue)
     }
     let lastChar = currentValue[currentValue.length-1]
     if (input === lastChar){
@@ -52,34 +50,33 @@ function addListeners(){
         Element.addEventListener('click', e =>{
         console.log(e.target.value);
         operate(e.target.value);
+        mainScreen.textContent = getMainScreen(currentValue);
+        resetIfSolved(currentValue)
         console.log(currentValue)
         })
     })
 }
 addListeners();
 function resolve(currentValue){
-    let currentOperatorIndex = getOperator(currentValue)
-    let currentOperator = currentValue[currentOperatorIndex]
-    let firstSegment = currentValue.slice(0, currentOperatorIndex)
-    let nextOperatorIndex = getNextOperator(currentValue,currentOperatorIndex)
-    let secondSegment = currentOperator.slice(currentOperatorIndex+1, nextOperatorIndex-1)
-    let result = calculate(currentOperator,firstSegment,secondSegment);
-    let 
-    currentOperatorIndex = getNextOperator(currentValue, currentOperatorIndex)
-    if (currentOperatorIndex === -1){
-        return result
-    }
+    let dividedArray = splitIntoSegments(currentValue)
+    let result = calculateEach(dividedArray)
+
+    return result
 }
 function getOperator(currentArray){
-    return currentArray.findIndex(isOperator)
+    return currentArray.findIndex(isOperator);
 }
 function getNextOperator(currentValue, currentOperatorIndex){
-    nextArraySegment = currentValue.slice(currentOperatorIndex+1)
+    let nextArraySegment = currentValue.slice(currentOperatorIndex+1)
     return nextArraySegment.findIndex(isOperator)
 }
 function calculate(currentOperator,firstSegment,secondSegment){
-    firstNumber = parseInt(firstSegment.join(''));
-    secondNumber = parseInt(secondSegment.join(''));
+    if (Array.isArray(firstSegment)){
+    firstNumber = parseFloat(firstSegment.join(''));
+} else {
+    firstNumber = firstSegment;
+}
+    secondNumber = parseFloat(secondSegment.join(''));
     if (currentOperator === '+'){
         return add(firstNumber,secondNumber);
     } else if (currentOperator === '-'){
@@ -90,13 +87,52 @@ function calculate(currentOperator,firstSegment,secondSegment){
         return divide(firstNumber,secondNumber);
     }
 }
-function getOperatorInstances (currentValue){
-    let howManyOperators = 0;
-    let slicedArray = []
-    let currentOperatorIndex = getOperator(currentValue);
+function splitIntoSegments(currentValue){
+    let segmentedArray =[]
+    let startIndex = 0
+    let currentOperatorIndex = 0
+    if (getOperator(currentValue)=== -1){
+        return currentValue
+    } else {
+        currentOperatorIndex = getOperator(currentValue)
         while (currentOperatorIndex > -1){
-        slicedValue = currentValue.slice(currentOperatorIndex+1)
-        currentOperatorIndex = getOperator(slicedValue);
-        howManyOperators++
-        } return howManyOperators
+            segmentedArray.push(parseFloat((currentValue.slice(startIndex,currentOperatorIndex).join(''))))
+            segmentedArray.push((currentValue.slice(currentOperatorIndex,currentOperatorIndex+1).join('')))
+            currentValue = currentValue.slice(currentOperatorIndex+1)
+            currentOperatorIndex = getOperator(currentValue)
+        } segmentedArray.push(parseFloat(currentValue.join('')))
+        return segmentedArray
     }
+}
+function calculateEach(dividedArray){
+    let currentOperatorIndex = getOperator(dividedArray)
+    if (currentOperatorIndex === -1){
+        return parseFloat(dividedArray.join(''));
+    } else {
+            let currentOperator = dividedArray[currentOperatorIndex]
+            let firstSegment = dividedArray.slice(0,currentOperatorIndex)
+            let secondSegment = dividedArray.slice(currentOperatorIndex+1,currentOperatorIndex+2)
+            let result = calculate(currentOperator,firstSegment,secondSegment)
+            let slicedArray = dividedArray.slice(currentOperatorIndex+2)
+            currentOperatorIndex = getOperator(slicedArray)
+            if (currentOperatorIndex > -1){
+                secondSegment = slicedArray.slice(currentOperatorIndex+1,currentOperatorIndex+2)
+                currentOperator = slicedArray[currentOperatorIndex]
+                result = calculate(currentOperator,result,secondSegment);
+            }
+            return result
+    } 
+    
+}
+    function getMainScreen(currentValue){
+        if (Array.isArray(currentValue)){
+            return currentValue.join('');
+        } else {
+            return currentValue;
+    }
+}
+function resetIfSolved(currentArray){
+    if (!Array.isArray(currentArray)){
+        currentValue = [];
+    return 
+}}
