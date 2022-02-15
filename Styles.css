@@ -47,6 +47,10 @@ header{
     padding: 25px;
     
 }
+button{
+    color: blue;
+    font-size: 24px;
+}
 .calc{
     display: grid;
     background-color:white;
@@ -67,6 +71,8 @@ header{
     display: grid;
     grid-template-rows: repeat(5, 1fr);
     grid-column: 1/5;
+    font-size: 32px;
+    font-weight: 500;
 }
 .previous{
     font-size:medium;
