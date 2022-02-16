@@ -126,6 +126,9 @@ function calculateEach(dividedArray){
 }
     function getMainScreen(currentValue){
         if (Array.isArray(currentValue)){
+            if (currentValue.length === 0){
+                return 0
+            }
             return currentValue.join('');
         } else {
             return currentValue;
